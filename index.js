@@ -1,16 +1,11 @@
 import { readFile } from 'node:fs/promises';
 import express from 'express';
+import { sledzenie } from './lib/siedzenie.js';
 
 const PORT = 3000;
 const app = express();
 app.use(express.static('public'));
-app.use((req, res, next) => {
-  console.log(`2. serwer: przyszło żądanie ${req.method} ${req.url}`);
-  res.on('finish', () => {
-    console.log(`3. serwer: odpowiedź wysłana, status ${res.statusCode}`);
-  });
-  next();
-});
+app.use(sledzenie);
 
 async function wczytajSentencje() {
   const tekst = await readFile(new URL('./dane/sentencje.json', import.meta.url), 'utf8');
