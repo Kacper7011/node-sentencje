@@ -12,3 +12,12 @@ const server = app.listen(PORT);
 server.on('listening', () => {
   console.log(`Serwer działa: http://localhost:${PORT}/test.html`);
 });
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} jest zajęty – serwer działa już w innym terminalu?`);
+  } else {
+    console.error(err);
+  }
+  process.exit(1);
+});
