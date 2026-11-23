@@ -4,19 +4,18 @@ import express from 'express';
 const PORT = 3000;
 const app = express();
 app.use(express.static('public'));
+app.use((req, res, next) => {
+  console.log(`2. serwer: przyszło żądanie ${req.method} ${req.url}`);
+  res.on('finish', () => {
+    console.log(`3. serwer: odpowiedź wysłana, status ${res.statusCode}`);
+  });
+  next();
+});
 
 async function wczytajSentencje() {
   const tekst = await readFile(new URL('./dane/sentencje.json', import.meta.url), 'utf8');
   return JSON.parse(tekst);
 }
-
-app.use((req, res, next) => {
-  console.log(`2. serwer: odebrano żądanie ${req.method} ${req.path}`);
-  res.on('finish', () => {
-    console.log(`3. serwer: wysłano odpowiedź, status ${res.statusCode}`);
-  });
-  next();
-});
 
 app.get('/api/powitanie', (req, res) => {
   res.send('Witaj z Expressa!');
